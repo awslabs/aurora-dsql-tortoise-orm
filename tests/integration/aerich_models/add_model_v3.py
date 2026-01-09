@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 """V3 model for incremental migration tests - adds ThirdModel."""
 
 from tortoise import fields

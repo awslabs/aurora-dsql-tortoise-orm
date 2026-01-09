@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 """
 These tests run in isolated subprocesses because they test module imports and
 patching. The compat module patches aerich for the entire process, so tests must

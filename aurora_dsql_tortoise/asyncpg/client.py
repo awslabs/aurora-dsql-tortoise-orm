@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 import asyncpg
 import aurora_dsql_asyncpg as dsql
 from tortoise.backends.asyncpg.client import AsyncpgDBClient

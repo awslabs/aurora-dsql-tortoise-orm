@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 from aurora_dsql_tortoise.common.config import ASYNCPG_CASTS
 from aurora_dsql_tortoise.common.config import register_backend as _register_backend
 

@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 import pytest
 from tortoise.backends.base.config_generator import expand_db_url
 

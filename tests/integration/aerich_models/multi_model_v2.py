@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 """V2 model for multi-model migration test - adds two models at once."""
 
 from tortoise import fields

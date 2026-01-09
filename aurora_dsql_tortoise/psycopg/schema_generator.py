@@ -1,3 +1,6 @@
+# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# # SPDX-License-Identifier: Apache-2.0
+
 from tortoise.backends.psycopg.schema_generator import PsycopgSchemaGenerator
 
 from aurora_dsql_tortoise.common.config import split_sql
