@@ -21,10 +21,11 @@ class DSQLModel(Model):
         using_db=None,
         **kwargs: Any,
     ) -> tuple[Self, bool]:
-        """DSQL-compatible update_or_create using OCC instead of SELECT FOR UPDATE.
-
-        Based on https://github.com/tortoise/tortoise-orm/blob/1d2400bb3daff7b1aa34884062ca0e936ea214b2/tortoise/models.py#L1165
-        """
+        """DSQL-compatible update_or_create using OCC instead of SELECT FOR UPDATE."""
+        # This code is based on Tortoise ORM
+        # Modifications: Copyright (c) Amazon.com, Inc. or its affiliates.
+        # License to Modifications: Apache 2.0
+        # Source: https://github.com/tortoise/tortoise-orm/blob/1d2400bb3daff7b1aa34884062ca0e936ea214b2/tortoise/models.py#L1165
         if not defaults:
             defaults = {}
         db = using_db or cls._choose_db(True)

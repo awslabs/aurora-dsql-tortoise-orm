@@ -84,10 +84,11 @@ async def _execute_ddl(conn, sql: str) -> None:
 
 
 async def _patched_upgrade(self, conn, version_file, fake=False, version_module=None):
-    """Upgrade with DSQL-compatible DDL execution.
-
-    Based on https://github.com/tortoise/aerich/blob/19f8e042b2f2ff621b08e79f1123f1d8bbf2a109/aerich/__init__.py#L103
-    """
+    """Upgrade with DSQL-compatible DDL execution."""
+    # This code is based on Aerich
+    # Modifications: Copyright (c) Amazon.com, Inc. or its affiliates.
+    # License to Modifications: Apache 2.0
+    # Source: https://github.com/tortoise/aerich/blob/19f8e042b2f2ff621b08e79f1123f1d8bbf2a109/aerich/__init__.py#L103
     if version_module is not None:
         m = import_py_module(version_module)
     else:
@@ -106,10 +107,11 @@ async def _patched_upgrade(self, conn, version_file, fake=False, version_module=
 
 
 async def _patched_downgrade(self: Command, version: int, delete: bool, fake: bool = False):
-    """Downgrade with DSQL-compatible DDL execution.
-
-    Based on https://github.com/tortoise/aerich/blob/19f8e042b2f2ff621b08e79f1123f1d8bbf2a109/aerich/__init__.py#L145
-    """
+    """Downgrade with DSQL-compatible DDL execution."""
+    # This code is based on Aerich
+    # Modifications: Copyright (c) Amazon.com, Inc. or its affiliates.
+    # License to Modifications: Apache 2.0
+    # Source: https://github.com/tortoise/aerich/blob/19f8e042b2f2ff621b08e79f1123f1d8bbf2a109/aerich/__init__.py#L145
     ret: list[str] = []
 
     if version == -1:
