@@ -72,12 +72,13 @@ PSYCOPG_CASTS = {
 # may be within a quoted string.
 _TOKEN_RE = re.compile(
     r"""
-    (;)                                       # semicolon
-    |('[^']*(?:''[^']*)*')                    # single-quoted string
-    |("[^"]*(?:""[^"]*)*")                    # double-quoted identifier
-    |(\$[a-zA-Z_]?\w*\$.*?\$[a-zA-Z_]?\w*\$)  # dollar-quoted string
-    |(\$)                                     # lone dollar sign
-    |([^;'"$]+)                               # everything else
+    ;                                            # semicolon
+    |'[^']*(?:''[^']*)*'                         # single-quoted string
+    |"[^"]*(?:""[^"]*)*"                         # double-quoted identifier
+    |\$\$.*?\$\$                                 # dollar-quoted string (no tag)
+    |(\$(?P<tag>[a-zA-Z_]\w*)\$.*?\$(?P=tag)\$)  # dollar-quoted string (with tag)
+    |\$                                          # lone dollar sign
+    |[^;'"$]+                                    # everything else
     """,
     re.VERBOSE | re.DOTALL,
 )

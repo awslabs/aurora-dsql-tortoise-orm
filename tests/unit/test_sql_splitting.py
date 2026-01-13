@@ -69,6 +69,12 @@ def test_tagged_dollar_quoted_string():
     assert result == ["SELECT $foo$contains;semicolon$foo$", "SELECT 1"]
 
 
+def test_mismatched_dollar_quote_tags():
+    # $foo$ and $bar$ are different tags, so the semicolon should split
+    result = split_sql("SELECT $foo$hello; world$bar$")
+    assert result == ["SELECT $foo$hello", "world$bar$"]
+
+
 def test_single_quote_inside_dollar_quoted_string():
     result = split_sql("SELECT $$it's fine$$; SELECT 1")
     assert result == ["SELECT $$it's fine$$", "SELECT 1"]
