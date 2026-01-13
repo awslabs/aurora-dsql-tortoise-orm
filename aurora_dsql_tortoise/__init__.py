@@ -1,5 +1,5 @@
-# # Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
-# # SPDX-License-Identifier: Apache-2.0
+# Copyright Amazon.com, Inc. or its affiliates. All Rights Reserved.
+# SPDX-License-Identifier: Apache-2.0
 
 from aurora_dsql_tortoise._version import __version__ as __version__
 from aurora_dsql_tortoise.asyncpg import register_backend as register_asyncpg
