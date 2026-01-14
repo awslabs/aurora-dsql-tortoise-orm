@@ -3,7 +3,7 @@
 
 """
 These tests run in isolated subprocesses because they test module imports and
-patching. The compat module patches aerich for the entire process, so tests must
+patching. The module patches aerich for the entire process, so tests must
 start with a fresh Python interpreter to avoid cross-contamination from other
 tests.
 """
@@ -12,8 +12,8 @@ import subprocess
 import sys
 
 
-def test_aerich_without_compat_uses_default_fields():
-    """Verify aerich uses IntField PK and JSONB when compat module is not in models list."""
+def test_aerich_without_patches_uses_default_fields():
+    """Verify aerich uses IntField PK and JSONB when module is not in models list."""
     code = """
 import asyncio
 from tortoise import Tortoise
@@ -46,8 +46,8 @@ asyncio.run(test())
     assert "OK" in result.stdout
 
 
-def test_aerich_with_compat_in_models_applies_patches():
-    """Verify adding aerich_compat to models list applies DSQL patches."""
+def test_aerich_with_module_in_models_applies_patches():
+    """Verify adding aerich module to models list applies DSQL patches."""
     code = """
 import asyncio
 from tortoise import Tortoise
@@ -57,7 +57,7 @@ async def test():
         'connections': {'default': 'sqlite://:memory:'},
         'apps': {
             'models': {
-                'models': ['aerich.models', 'aurora_dsql_tortoise.aerich_compat'],
+                'models': ['aerich.models', 'aurora_dsql_tortoise.aerich'],
                 'default_connection': 'default',
             }
         }
