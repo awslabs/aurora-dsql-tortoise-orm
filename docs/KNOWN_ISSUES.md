@@ -60,3 +60,11 @@ The relationship works for ORM queries and joins, but:
 **Root Cause:** Aurora DSQL does not support foreign key constraints.
 
 **Workaround:** Implement referential integrity checks in application logic.
+
+## Aerich compatibility module prevents side-by-side PostgreSQL use
+
+**Issue:** Enabling the Aerich compatibility module (`aurora_dsql_tortoise.aerich_compat`) prevents using standard PostgreSQL and Aurora DSQL in the same application.
+
+**Root Cause:** The compatibility module patches global Aerich behavior to use DSQL-compatible DDL generation. These patches affect all database connections, not just DSQL connections.
+
+**Workaround:** If you need to use both PostgreSQL and Aurora DSQL in the same application, do not include `aurora_dsql_tortoise.aerich_compat` in your models list. You will need to manage DSQL migrations manually.
