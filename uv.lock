@@ -194,14 +194,14 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "aurora-dsql-python-connector" },
-    { name = "tortoise-orm", extras = ["asyncpg"], marker = "extra == 'asyncpg'" },
-    { name = "tortoise-orm", extras = ["psycopg"], marker = "extra == 'psycopg'" },
+    { name = "tortoise-orm", extras = ["asyncpg"], marker = "extra == 'asyncpg'", specifier = ">=0.25" },
+    { name = "tortoise-orm", extras = ["psycopg"], marker = "extra == 'psycopg'", specifier = ">=0.25" },
 ]
 provides-extras = ["asyncpg", "psycopg"]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aerich", extras = ["toml"] },
+    { name = "aerich", extras = ["toml"], specifier = ">=0.9.2" },
     { name = "hatch-vcs" },
     { name = "hatchling" },
     { name = "pip" },
@@ -211,8 +211,8 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "python-dotenv" },
     { name = "ruff" },
-    { name = "tortoise-orm", extras = ["asyncpg"] },
-    { name = "tortoise-orm", extras = ["psycopg"] },
+    { name = "tortoise-orm", extras = ["asyncpg"], specifier = ">=0.25" },
+    { name = "tortoise-orm", extras = ["psycopg"], specifier = ">=0.25" },
 ]
 
 [[package]]
