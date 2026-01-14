@@ -69,7 +69,7 @@ PSYCOPG_CASTS = {
 
 # This expression is used to tokenize a series of SQL statements, so they can be
 # split for individual execution. We can't simply split on semicolons, as they
-# may be within a quoted string.
+# may be within a quoted string or comment.
 _TOKEN_RE = re.compile(
     r"""
     ;                                            # semicolon
@@ -78,7 +78,11 @@ _TOKEN_RE = re.compile(
     |\$\$.*?\$\$                                 # dollar-quoted string (no tag)
     |(\$(?P<tag>[a-zA-Z_]\w*)\$.*?\$(?P=tag)\$)  # dollar-quoted string (with tag)
     |\$                                          # lone dollar sign
-    |[^;'"$]+                                    # everything else
+    |-(?!-)                                      # lone dash (not start of --)
+    |/(?!\*)                                     # lone slash (not start of /*)
+    |--[^\r\n]*                                  # single-line comment
+    |/\*.*?\*/                                   # multi-line comment
+    |[^;'"$/-]+                                  # everything else
     """,
     re.VERBOSE | re.DOTALL,
 )

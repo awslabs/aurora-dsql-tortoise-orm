@@ -102,3 +102,33 @@ def test_combined_stress_test():
         'CREATE TABLE "a""b;c" (x INT)',
         "SELECT 1",
     ]
+
+
+def test_semicolon_in_single_line_comment():
+    result = split_sql("SELECT 1 -- comment with ; semicolon\n; SELECT 2")
+    assert result == ["SELECT 1 -- comment with ; semicolon", "SELECT 2"]
+
+
+def test_semicolon_in_trailing_multi_line_comment():
+    result = split_sql("SELECT 1 /* comment\n;\nhere */; SELECT 2")
+    assert result == ["SELECT 1 /* comment\n;\nhere */", "SELECT 2"]
+
+
+def test_semicolon_in_leading_multi_line_comment():
+    result = split_sql("SELECT 1; /* comment\n;\nhere */SELECT 2")
+    assert result == ["SELECT 1", "/* comment\n;\nhere */SELECT 2"]
+
+
+def test_empty_multi_line_comment():
+    result = split_sql("SELECT /**/1; SELECT 2")
+    assert result == ["SELECT /**/1", "SELECT 2"]
+
+
+def test_comment_like_sequence_in_string():
+    result = split_sql("SELECT '-- not; comment'; SELECT '/* also; not */'")
+    assert result == ["SELECT '-- not; comment'", "SELECT '/* also; not */'"]
+
+
+def test_arithmetic_operators():
+    result = split_sql("SELECT 5-3; SELECT 10/2")
+    assert result == ["SELECT 5-3", "SELECT 10/2"]
