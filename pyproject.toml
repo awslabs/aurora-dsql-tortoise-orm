@@ -82,6 +82,9 @@ venv = ".venv"
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
+markers = [
+    "use_schemas: mark test to generate schemas before running",
+]
 
 [tool.aerich]
 tortoise_orm = "example.tortoise_config.TORTOISE_ORM"
