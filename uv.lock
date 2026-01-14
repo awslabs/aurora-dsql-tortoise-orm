@@ -162,7 +162,7 @@ wheels = [
 ]
 
 [[package]]
-name = "aurora-dsql-tortoise"
+name = "aurora-dsql-tortoise-orm"
 source = { editable = "." }
 dependencies = [
     { name = "aurora-dsql-python-connector" },

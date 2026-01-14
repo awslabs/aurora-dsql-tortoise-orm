@@ -1,5 +1,5 @@
 [project]
-name = "aurora-dsql-tortoise"
+name = "aurora-dsql-tortoise-orm"
 dynamic = ["version"]
 description = "Aurora DSQL adapter for Tortoise ORM"
 license-files = ["LICENSE"]
