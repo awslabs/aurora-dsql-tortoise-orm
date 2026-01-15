@@ -134,13 +134,14 @@ async def test_connection_with_default_admin_user(backend: str):
 @pytest.mark.parametrize("backend", BACKENDS)
 async def test_profile_setting_used_for_credentials(backend: str, monkeypatch):
     """Test that profile setting is passed to boto3.Session for credentials."""
-    test_profile = "default"
+    test_profile = "test-profile"
     captured_profile = None
     original_session = boto3.Session
 
     def mock_session(*args, **kwargs):
         nonlocal captured_profile
         captured_profile = kwargs.get("profile_name")
+        kwargs.pop("profile_name", None)
         return original_session(*args, **kwargs)
 
     monkeypatch.setattr("boto3.Session", mock_session)
@@ -170,13 +171,14 @@ async def test_profile_setting_used_for_credentials(backend: str, monkeypatch):
 @pytest.mark.parametrize("backend", BACKENDS)
 async def test_profile_url_parameter_used_for_credentials(backend: str, monkeypatch):
     """Test that profile setting works when passed via connection URL."""
-    test_profile = "default"
+    test_profile = "test-profile"
     captured_profile = None
     original_session = boto3.Session
 
     def mock_session(*args, **kwargs):
         nonlocal captured_profile
         captured_profile = kwargs.get("profile_name")
+        kwargs.pop("profile_name", None)
         return original_session(*args, **kwargs)
 
     monkeypatch.setattr("boto3.Session", mock_session)
