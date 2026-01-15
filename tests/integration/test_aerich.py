@@ -68,7 +68,7 @@ def make_config(models: list[str], backend: str) -> dict:
         },
         "apps": {
             "models": {
-                "models": models + ["aerich.models", "aurora_dsql_tortoise.aerich_compat"],
+                "models": models + ["aerich.models", "aurora_dsql_tortoise.aerich"],
                 "default_connection": "default",
             }
         },

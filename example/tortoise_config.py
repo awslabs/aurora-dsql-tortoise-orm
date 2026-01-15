@@ -28,7 +28,7 @@ TORTOISE_ORM = {
             "models": [
                 "example.models",
                 "aerich.models",
-                "aurora_dsql_tortoise.aerich_compat",  # Apply DSQL patches for aerich
+                "aurora_dsql_tortoise.aerich",  # Apply DSQL patches for aerich
             ],
             "default_connection": "default",
         }
