@@ -19,7 +19,7 @@ This document describes how the Aurora DSQL adapter for Tortoise ORM modifies st
 
 **Impact:**
 - Index creation returns immediately without waiting for completion
-- Indexes may not be available for queries until background creation finishes
+- Indexes will not be available for queries until background creation finishes
 - No change required in application code
 
 **Why this is necessary:** Aurora DSQL requires the `ASYNC` keyword for index creation.
