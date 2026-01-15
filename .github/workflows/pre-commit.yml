@@ -16,7 +16,7 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v5
       - run: uv sync
       - uses: pre-commit/action@v3.0.1
