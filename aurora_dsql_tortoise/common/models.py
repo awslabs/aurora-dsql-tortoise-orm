@@ -29,6 +29,10 @@ class DSQLModel(Model):
         if not defaults:
             defaults = {}
         db = using_db or cls._choose_db(True)
+        instance = await cls.filter(**kwargs).using_db(db).get_or_none()
+        if instance:
+            await instance.update_from_dict(defaults).save(using_db=db)
+            return instance, False
         instance, created = await cls._create_or_get(db, defaults, **kwargs)
         if not created:
             await instance.update_from_dict(defaults).save(using_db=db)
