@@ -99,3 +99,26 @@ async def test_applies_defaults_when_row_created_after_existence_check(mock_env)
     assert result.name == "updated"
     assert created is False
     mock_save.assert_called_once()
+
+
+@pytest.mark.asyncio
+async def test_finds_existing_row_without_unique_constraint(mock_env):
+    """When lookup field has no unique constraint, get_or_none finds the row
+    instead of relying on _create_or_get's IntegrityError handling."""
+    mock_db, mock_queryset = mock_env
+    instance = UpdateOrCreateModel(name="existing")
+    mock_queryset.using_db.return_value.get_or_none = AsyncMock(return_value=instance)
+
+    with (
+        patch.object(
+            UpdateOrCreateModel, "_create_or_get", return_value=(instance, True)
+        ) as mock_create,
+        patch.object(instance, "save", new_callable=AsyncMock),
+    ):
+        result, created = await UpdateOrCreateModel.update_or_create(
+            defaults={"name": "updated"}, using_db=mock_db, name="existing"
+        )
+
+    assert result.name == "updated"
+    assert created is False
+    mock_create.assert_not_called()
