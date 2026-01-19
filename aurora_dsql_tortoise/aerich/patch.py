@@ -117,7 +117,8 @@ async def _patched_downgrade(self: Command, version: int, delete: bool, fake: bo
     else:
         # This differs from upstream, as we need to filter on the version given
         # UUIDs do not have a predictable sort order.
-        versions = await Aerich.filter(app=self.app, version__gte=specified_version.version)
+        all_versions = await Aerich.filter(app=self.app)
+        versions = [v for v in all_versions if int(v.version.split("_")[0]) >= version]
 
     conn = get_app_connection(self.tortoise_config, self.app)
 
