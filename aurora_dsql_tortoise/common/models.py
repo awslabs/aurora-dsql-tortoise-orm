@@ -4,7 +4,6 @@
 from typing import Any
 
 from tortoise.models import Model
-from tortoise.transactions import in_transaction
 from typing_extensions import Self
 
 
@@ -30,10 +29,11 @@ class DSQLModel(Model):
         if not defaults:
             defaults = {}
         db = using_db or cls._choose_db(True)
-        async with in_transaction(connection_name=db.connection_name) as connection:
-            # Change is here, replaced select_for_update() with filter call to get QuerySet.
-            instance = await cls.filter(**kwargs).using_db(connection).get_or_none(**kwargs)
-            if instance:
-                await instance.update_from_dict(defaults).save(using_db=connection)
-                return instance, False
-        return await cls._create_or_get(db, defaults, **kwargs)
+        instance = await cls.filter(**kwargs).using_db(db).get_or_none()
+        if instance:
+            await instance.update_from_dict(defaults).save(using_db=db)
+            return instance, False
+        instance, created = await cls._create_or_get(db, defaults, **kwargs)
+        if not created:
+            await instance.update_from_dict(defaults).save(using_db=db)
+        return instance, created
