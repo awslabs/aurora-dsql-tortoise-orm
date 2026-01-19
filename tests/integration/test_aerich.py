@@ -5,6 +5,7 @@ import shutil
 import tempfile
 import uuid
 from pathlib import Path
+from textwrap import dedent
 
 import pytest
 from aerich import Command
@@ -244,6 +245,50 @@ async def test_aerich_add_model_and_downgrade_to_version(migration_dir, backend)
     assert await table_exists(conn, "existing_model"), "existing_model should remain"
     assert not await table_exists(conn, "second_model"), "second_model should be dropped"
     assert not await table_exists(conn, "third_model"), "third_model should be dropped"
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize("backend", BACKENDS)
+async def test_aerich_downgrade_version_ordering(migration_dir, backend):
+    """Test downgrading with double-digit versions uses numeric comparison.
+
+    String comparison would fail lexicographically since '10_...' < '2_...'
+    """
+    # V1: Initial migration.
+    command = await make_command([ADD_MODEL_V1], migration_dir, backend)
+    await command.init_db(safe=True)
+
+    # V2-V11: Create fake migrations to get a double-digit version (10), since
+    # the migration count is 0-based.
+    models_dir = Path(Migrate.migrate_location)
+    migration_content = dedent("""
+        async def upgrade(db):
+            return ''
+
+        async def downgrade(db):
+            return 'SELECT 1'
+    """).lstrip()
+
+    for i in range(1, 11):
+        filename = f"{i}_fake_migration.py"
+        (models_dir / filename).write_text(migration_content)
+        await Aerich.create(version=filename, app="models", content={})
+
+    # V1 + V2-V11 = 11 versions total (indices 0-10).
+    all_versions = await Aerich.filter(app="models").all()
+    assert len(all_versions) == 11
+
+    # Downgrade to V3: undoes V4-V11 (indices 3-10 = 8 versions).
+    # We choose V3 so that indices 0-2 remain. If index 10 were incorrectly
+    # included due to string sorting, it would appear before index 2.
+    result = await command.downgrade(version=3, delete=False, fake=True)
+    assert len(result) == 8, f"Expected 8 downgrades, got {len(result)}: {result}"
+
+    # V1-V3 (indices 0-2) should remain.
+    remaining = await Aerich.filter(app="models").all()
+    assert len(remaining) == 3
+    remaining_indices = sorted(int(v.version.split("_")[0]) for v in remaining)
+    assert remaining_indices == [0, 1, 2]
 
 
 @pytest.mark.asyncio
