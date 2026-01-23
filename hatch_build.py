@@ -16,7 +16,7 @@ class ReadmeMetadataHook(MetadataHookInterface):
         content = open(readme_path).read()
 
         version = metadata.get("version", "")
-        ref = "main" if "dev" in version else f"v{version}"
+        ref = "main" if "dev" in version else version
 
         def convert_relative_link(match):
             link_text, old_url = match.group(1), match.group(2)
