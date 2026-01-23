@@ -11,34 +11,13 @@ on:
 
 jobs:
   create-cluster:
-    name: Create Aurora DSQL Cluster
-    runs-on: ubuntu-latest
+    uses: ./.github/workflows/dsql-cluster-create.yml
+    with:
+      workflow_name: tortoise-orm
+    secrets:
+      AWS_IAM_ROLE: ${{ secrets.IAM_ROLE }}
     permissions:
       id-token: write # required by aws-actions/configure-aws-credentials
-    outputs:
-      cluster-id: ${{ steps.create.outputs.cluster-id }}
-
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: ${{ secrets.IAM_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Create Aurora DSQL cluster
-        id: create
-        run: |
-          RESULT=$(aws dsql create-cluster \
-            --no-deletion-protection-enabled \
-            --region "${{ secrets.AWS_REGION }}" \
-            --tags "Name=tortoise-orm-${{ github.run_id }}")
-          CLUSTER_ID=$(echo "$RESULT" | jq -r '.identifier')
-
-          aws dsql wait cluster-active \
-            --identifier "$CLUSTER_ID" \
-            --region "${{ secrets.AWS_REGION }}"
-
-          echo "cluster-id=$CLUSTER_ID" >> "$GITHUB_OUTPUT"
 
   integration-tests:
     name: Integration Tests (Python ${{ matrix.python-version }})
@@ -63,31 +42,21 @@ jobs:
         uses: aws-actions/configure-aws-credentials@v5
         with:
           role-to-assume: ${{ secrets.IAM_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
+          aws-region: ${{ needs.create-cluster.outputs.region }}
 
       - name: Run integration tests
         env:
-          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-id }}.dsql.${{ secrets.AWS_REGION }}.on.aws
+          CLUSTER_ENDPOINT: ${{ needs.create-cluster.outputs.cluster-endpoint }}
         run: uv run integration
 
   delete-cluster:
-    name: Delete Aurora DSQL Cluster
-    needs: [create-cluster, integration-tests]
-    runs-on: ubuntu-latest
     if: always() && needs.create-cluster.result == 'success'
+    needs: [create-cluster, integration-tests]
+    uses: ./.github/workflows/dsql-cluster-delete.yml
+    with:
+      cluster-id: ${{ needs.create-cluster.outputs.cluster-id }}
+      region: ${{ needs.create-cluster.outputs.region }}
+    secrets:
+      AWS_IAM_ROLE: ${{ secrets.IAM_ROLE }}
     permissions:
       id-token: write # required by aws-actions/configure-aws-credentials
-
-    steps:
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v5
-        with:
-          role-to-assume: ${{ secrets.IAM_ROLE }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Delete Aurora DSQL cluster
-        run: |
-          aws dsql delete-cluster \
-            --identifier "${{ needs.create-cluster.outputs.cluster-id }}" \
-            --region ${{ secrets.AWS_REGION }} \
-            > /dev/null
