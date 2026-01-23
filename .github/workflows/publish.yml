@@ -57,7 +57,7 @@ jobs:
 
   publish-to-testpypi:
     name: Publish to TestPyPI
-    needs: build
+    needs: [build, update-changelog]
     runs-on: ubuntu-latest
     environment:
       name: testpypi
